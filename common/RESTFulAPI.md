@@ -2,11 +2,11 @@
 
 ## REST API의 구성
 
-### `자원(RESOURCE) - URI`
+자원(RESOURCE) - URI
 
-### `행위(VERB) - HTTP METHOD`
+행위(VERB) - HTTP METHOD
 
-### `표현(REPRESENTATIONS)`
+표현(REPRESENTATIONS)
 
 ## REST 의 특징
 

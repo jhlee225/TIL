@@ -1,4 +1,4 @@
-# studyDevRepo
+# Today I Learned
 
 개발자가 되기위해 공부한 것들을 Repository에 정리
 

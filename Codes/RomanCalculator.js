@@ -1,5 +1,5 @@
 let inputs = [
-  "I + III",
+  "I + I",
   "XX-IV",
   "III*VI",
   "X / III",
@@ -18,37 +18,79 @@ function calculate(expression) {
     const firstNumber = expression[0],
       operation = expression[1],
       secondNumber = expression[2];
-
     switch (operation) {
       case "+":
         calculateResult = firstNumber + secondNumber;
-        return calculateResult < 39
-          ? toRoman(calculateResult)
-          : "범위를 벗어났습니다.";
+        return exception(operation, calculateResult);
       case "-":
         calculateResult = firstNumber - secondNumber;
-        return calculateResult === 0
-          ? "범위를 벗어났습니다."
-          : calculateResult < 0
-          ? "작은 수 에서 큰 수를 뺄 수 없습니다."
-          : toRoman(calculateResult);
+        return exception(operation, calculateResult);
+
       case "*":
         calculateResult = firstNumber * secondNumber;
-        return calculateResult < 39
-          ? toRoman(calculateResult)
-          : "범위를 벗어났습니다.";
-      case "/":
-        let quotient = Math.floor(firstNumber / secondNumber);
-        let remain = expression[0] % expression[2];
+        return exception(operation, calculateResult);
 
-        calculateResult = `몫 ${toRoman(quotient)}, 나머지 ${toRoman(remain)}`;
-        return quotient === 0
-          ? "작은 수 에서 큰 수를 나눌 수 없습니다."
-          : calculateResult;
+      case "/":
+        calculateResult = Math.floor(firstNumber / secondNumber);
+        remain = expression[0] % expression[2];
+        return exception(operation, calculateResult, remain);
     }
   } else {
     return "Input의 형식이 옳지 않습니다.";
   }
+}
+
+function exception(operation, result, remain) {
+  const upperXXXX = result < 39,
+    isZero = result === 0,
+    rowerZero = result < 0;
+  switch (operation) {
+    case "+":
+      return upperXXXX ? toRoman(result) : "범위를 벗어났습니다.";
+    case "-":
+      return isZero
+        ? "범위를 벗어났습니다."
+        : rowerZero
+        ? "작은 수 에서 큰 수를 뺄 수 없습니다."
+        : toRoman(result);
+    case "*":
+      return upperXXXX ? toRoman(result) : "범위를 벗어났습니다.";
+    case "/":
+      return isZero
+        ? "작은 수에서 큰 수를 나눌 수 없습니다."
+        : `몫 ${toRoman(result)}, 나머지 ${toRoman(remain)}`;
+  }
+}
+
+function toRoman(number) {
+  let romanNumber = [];
+  const tenDigits = Math.floor(number / 10),
+    oneDigit = number % 10,
+    upperV = Math.floor(oneDigit / 5) === 1,
+    isRemainIV = oneDigit % 5 === 4;
+
+  function replaceTo(newOne, upperV) {
+    if (upperV) {
+      romanNumber.pop();
+    }
+    romanNumber.push(newOne);
+  }
+
+  for (let i = 0; i < tenDigits; i++) {
+    romanNumber.push("X");
+  }
+  if (upperV) {
+    romanNumber.push("V");
+  }
+  for (let i = 0; i < oneDigit % 5; i++) {
+    if (isRemainIV) {
+      upperV ? replaceTo("IX", upperV) : replaceTo("IV", upperV);
+      break;
+    }
+    romanNumber.push("I");
+  }
+
+  return romanNumber.toString().replace(/,/g, "");
 }
 
 function toNumber(expression) {
@@ -92,33 +134,6 @@ function toNumber(expression) {
   result.push(number);
 
   return result;
-}
-
-function toRoman(number) {
-  let romanNumber = [];
-  const tenDigits = Math.floor(number / 10),
-    oneDigit = number % 10;
-
-  function replaceTo(newOne) {
-    romanNumber.pop();
-    romanNumber.push(newOne);
-  }
-
-  for (let i = 0; i < tenDigits; i++) {
-    romanNumber.push("X");
-  }
-  if (Math.floor(oneDigit / 5) === 1) {
-    romanNumber.push("V");
-  }
-  for (let i = 0; i < oneDigit % 5; i++) {
-    if (oneDigit % 5 === 4) {
-      Math.floor(oneDigit / 5) === 0 ? replaceTo("IV") : replaceTo("IX");
-      break;
-    }
-    romanNumber.push("I");
-  }
-
-  return romanNumber.toString().replace(/,/g, "");
 }
 
 inputs.forEach((expression) => {

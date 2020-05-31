@@ -6,14 +6,15 @@ let inputs = [
   "III / X",
   "X - XXX",
   "XX + XX",
+  "XXXX - XX",
   "XH + XX",
 ];
 
 const expressionReg = /^[I|V|X| ]+[\*|\-|\+|\/][I|V|X| ]+$/;
 
-function calculate(expression) {
+const calculate = function (expression) {
   if (expressionReg.test(expression) === true) {
-    expression = toNumber(expression.split(""));
+    expression = toNumber(expression.replace(/ /g, "").split(""));
     let calculateResult;
     const firstNumber = expression[0],
       operation = expression[1],
@@ -21,37 +22,40 @@ function calculate(expression) {
     switch (operation) {
       case "+":
         calculateResult = firstNumber + secondNumber;
-        return exception(operation, calculateResult);
+        return exception(expression, calculateResult);
       case "-":
         calculateResult = firstNumber - secondNumber;
-        return exception(operation, calculateResult);
+        return exception(expression, calculateResult);
 
       case "*":
         calculateResult = firstNumber * secondNumber;
-        return exception(operation, calculateResult);
+        return exception(expression, calculateResult);
 
       case "/":
         calculateResult = Math.floor(firstNumber / secondNumber);
         remain = expression[0] % expression[2];
-        return exception(operation, calculateResult, remain);
+        return exception(expression, calculateResult, remain);
     }
   } else {
     return "Input의 형식이 옳지 않습니다.";
   }
-}
+};
 
-function exception(operation, result, remain) {
+function exception(expression, result, remain) {
+  if ((expression[0] > 39) | (expression[2] > 39)) {
+    return "Input값이 범위를 벗어났습니다";
+  }
   const upperXXXX = result < 39,
     isZero = result === 0,
     rowerZero = result < 0;
-  switch (operation) {
+  switch (expression[1]) {
     case "+":
       return upperXXXX ? toRoman(result) : "범위를 벗어났습니다.";
     case "-":
       return isZero
         ? "범위를 벗어났습니다."
         : rowerZero
-        ? "작은 수 에서 큰 수를 뺄 수 없습니다."
+        ? "작은 수에서 큰 수를 뺄 수 없습니다."
         : toRoman(result);
     case "*":
       return upperXXXX ? toRoman(result) : "범위를 벗어났습니다.";
@@ -109,18 +113,10 @@ function toNumber(expression) {
         number += 1;
         break;
       case "V":
-        if (number % 10 === 1) {
-          number -= 2;
-        }
-        number += 5;
+        number % 10 === 1 ? (number += 3) : (number += 5);
         break;
       case "X":
-        if (number % 10 === 1) {
-          number -= 2;
-        }
-        number += 10;
-        break;
-      default:
+        number % 10 === 1 ? (number += 8) : (number += 10);
         break;
     }
   }

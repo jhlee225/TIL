@@ -8,7 +8,7 @@
 
 노드의 고유번호 값과 배열의 index 를 일치시켜 혼동을 줄임
 
-### `Max Heap`
+### `Max/Min Heap`
 
 각 노드의 값이 해당 children 의 값보다 크거나 같은 complete binary tree
 (Min Heap 은 반대)
